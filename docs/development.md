@@ -36,6 +36,24 @@ checksum.
 | `mise run setup` | Check the pinned tools are installed |
 | `mise run clean` | Remove build output and `dist/` |
 
+## Updating the Dagger module
+
+`.dagger/go.mod` pins the Dagger Go SDK's dependencies (gRPC, OpenTelemetry,
+`golang.org/x/*`). They run only inside the pipeline's container, never in the
+theme. Dependabot raises security alerts for them but cannot open the fix: the
+module imports Dagger's generated code, which is not committed, so its update
+job fails with `dependency_file_not_resolvable`. Bump them by hand:
+
+```sh
+cd .dagger
+go get <module>@latest    # each module named in the alert
+go mod tidy
+cd .. && mise run ci      # Dagger regenerates its code and must still pass
+```
+
+To move to a new Dagger release, change the version in `.mise.toml` and
+`dagger.json`, then run `dagger develop`.
+
 ## Tests and fixtures
 
 `exampleSite/` is a generic demo that doubles as the test fixture: three

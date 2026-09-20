@@ -5,10 +5,24 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-Emend is a hard fork of [Typo](https://github.com/tomfran/typo) 3. The entries
-below describe what changed from it.
+Emend is a hard fork of [Typo](https://github.com/tomfran/typo) 3. The 1.0.0
+entry describes what changed from it.
 
 ## [Unreleased]
+
+### Added
+
+### Changed
+
+### Deprecated
+
+### Removed
+
+### Fixed
+
+### Security
+
+## [1.0.0] - 2026-09-20
 
 ### Added
 
@@ -32,8 +46,6 @@ below describe what changed from it.
 - Headings, nested lists, tables, code blocks and dates were restyled for reading on a phone.
 - The licence is AGPL-3.0-or-later. Typo's MIT notice is kept in `NOTICE`.
 
-### Deprecated
-
 ### Removed
 
 - KaTeX, Mermaid, giscus comments, Umami and Google Analytics, and the copy-code button: everything that loaded a third-party host or needed an extra inline script.
@@ -49,3 +61,6 @@ below describe what changed from it.
 ### Security
 
 - The theme makes no third-party requests and has exactly one inline script, so it works under a strict Content Security Policy.
+
+[Unreleased]: https://github.com/haydenk/emend/compare/v1.0.0...HEAD
+[1.0.0]: https://github.com/haydenk/emend/releases/tag/v1.0.0

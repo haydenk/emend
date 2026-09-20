@@ -306,7 +306,7 @@ func (m *Emend) Release(
 		WithEnvVariable("RUN_AT", time.Now().UTC().Format(time.RFC3339Nano)).
 		WithExec([]string{"sh", "-euc", `
 version="${TAG#v}"
-awk -v ver="$version" '/^## \[/ { if (found) exit; if (index($0, "[" ver "]")) found = 1; next } found { print }' /release/CHANGELOG.md > /release/notes.md
+awk -v ver="$version" '/^## \[/ { if (found) exit; if (index($0, "[" ver "]")) found = 1; next } /^\[[^]]+\]: / { if (found) exit } found { print }' /release/CHANGELOG.md > /release/notes.md
 if grep -q '[^[:space:]]' /release/notes.md; then notes="--notes-file /release/notes.md"; else notes="--generate-notes"; fi
 gh release view "$TAG" >/dev/null 2>&1 || gh release create "$TAG" --title "$TAG" $notes --verify-tag
 gh release upload "$TAG" "$ASSET" --clobber

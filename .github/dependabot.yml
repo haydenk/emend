@@ -2,7 +2,12 @@
 # comment beside each pin and updates both.
 #
 # Not covered: the tool versions in .mise.toml (hugo, dagger, go), which
-# Dependabot cannot read, and .dagger/go.mod, which `dagger develop` owns.
+# Dependabot cannot read, and .dagger/go.mod. Dependabot raises alerts for that
+# module but cannot fix them: main.go imports Dagger's generated code, which is
+# gitignored, so its `go mod tidy` fails ("dependency_file_not_resolvable").
+# So "Dependabot security updates" is switched off in the repository settings
+# (alerts stay on): every such update job would fail. Bump those modules by
+# hand: see "Updating the Dagger module" in docs/development.md.
 version: 2
 updates:
   - package-ecosystem: github-actions
