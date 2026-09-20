@@ -2,16 +2,18 @@ name: Demo
 
 # Publishes exampleSite, built from the latest release, to GitHub Pages.
 #
-# It runs after the Release workflow rather than inside it: a job on a tag ref
-# is refused by the github-pages environment, which only allows the default
-# branch, and a release created with GITHUB_TOKEN does not fire the `release`
-# event. workflow_run runs on master, then checks out the released tag.
+# It runs after a release rather than inside it: a job on a tag ref is refused
+# by the github-pages environment, which only allows the default branch, and a
+# release created with GITHUB_TOKEN does not fire the `release` event.
+# workflow_run runs on master, then checks out the released tag. A release
+# happens in one of two workflows: "Tag Release" (which calls Release after a
+# release pull request merges) or "Release" itself (a tag pushed by hand).
 # Run it by hand (workflow_dispatch) to republish the current release.
 #
 # One-time repository setting: Settings > Pages > Source: "GitHub Actions".
 on:
   workflow_run:
-    workflows: [Release]
+    workflows: [Tag Release, Release]
     types: [completed]
   workflow_dispatch:
 

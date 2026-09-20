@@ -27,7 +27,8 @@ checksum.
 | `mise run build` | Dagger: build `exampleSite/` into `exampleSite/public` |
 | `mise run package [version]` | Dagger: build `dist/emend-<version>.tar.gz` and verify it |
 | `mise run demo <base_url>` | Dagger: build the demo for a public URL into `dist/demo` |
-| `mise run release <tag>` | Dagger: test, package and publish to the GitHub release for a pushed tag |
+| `mise run tag <version> <sha>` | Dagger: create the tag `v<version>` at a commit through the GitHub API (what the Tag Release workflow runs) |
+| `mise run release <tag>` | Dagger: test, package and publish to the GitHub release for an existing tag |
 | `mise run csp-hash` | Dagger: print the CSP hash; fails if it differs from the recorded one |
 | `mise run syntax-css [--light s] [--dark s]` | Regenerate the syntax stylesheet from two Chroma styles |
 | `mise run icons` | Regenerate the favicon set and the generic `og-image.png` in `static/` |
@@ -129,7 +130,8 @@ the machine it runs on.
 | Workflow | Runs on | Does |
 | --- | --- | --- |
 | `ci.yml` | pull requests, pushes to `master` | `mise run ci` |
-| `release.yml` | a `v*.*.*` tag | checks the tag is on `master`, then `mise run release` |
+| `tag.yml` | a merged `release/*` or `hotfix/*` pull request | tags the merge commit `v<version>`, then calls `release.yml` |
+| `release.yml` | called by `tag.yml`, or a `v*.*.*` tag pushed by hand | checks the tag is on `master`, then `mise run release` |
 | `demo.yml` | after a successful release, or by hand | builds the latest release's demo and deploys it to GitHub Pages |
 | `codeql.yml` | pull requests, pushes to `master`, weekly | CodeQL analysis of the workflows, JavaScript, Python and Go (after `dagger develop`, so the pipeline's Go type-checks) |
 | `labeler.yml` | pull requests | labels by the paths touched |
@@ -137,12 +139,22 @@ the machine it runs on.
 
 To release:
 
-1. Move the `[Unreleased]` entries in `CHANGELOG.md` under a new
+1. Create a `release/1.2.3` branch.
+2. In `CHANGELOG.md`, move the `[Unreleased]` entries under a new
    `## [1.2.3] - YYYY-MM-DD` heading.
-2. Tag and push: `git tag -a v1.2.3 -m "v1.2.3" && git push origin v1.2.3`.
+3. Open a pull request into `master` and merge it.
 
-The release notes are that changelog section. Hugo Modules resolve the same
+Merging does the rest. `tag.yml` reads the version from the branch name, checks
+that the changelog has a section for it, and tags the merge commit `v1.2.3`.
+It then calls `release.yml`, which tests, packages and publishes
+`emend-v1.2.3.tar.gz` with that changelog section as the release notes, and
+`demo.yml` follows with the GitHub Pages deploy. Hugo Modules resolve the same
 tags, so module users and tarball users get identical versions.
+
+`tag.yml` calls `release.yml` directly because a tag created by a workflow's
+`GITHUB_TOKEN` does not trigger other workflows. A tag pushed by hand does, so
+`git tag -a v1.2.3 -m v1.2.3 && git push origin v1.2.3` from `master` still
+releases, without the pull request.
 
 `master` accepts only signed commits, and cannot be force-pushed or deleted;
 `v*` tags cannot be moved or deleted.

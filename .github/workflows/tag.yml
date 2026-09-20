@@ -1,0 +1,56 @@
+name: Tag Release
+
+# Merging a release/<version> or hotfix/<version> pull request into master tags
+# the merge commit v<version>, then runs the Release workflow for that tag.
+#
+# Release is called directly rather than left to its own tag trigger: a tag
+# created with GITHUB_TOKEN does not start other workflows. A tag pushed by
+# hand still does (release.yml keeps `on: push: tags`).
+on:
+  pull_request:
+    types: [closed]
+    branches:
+      - master
+
+permissions:
+  contents: read
+
+jobs:
+  tag:
+    name: Create Release Tag
+    if: >-
+      github.event.pull_request.merged == true &&
+      (startsWith(github.event.pull_request.head.ref, 'release/') ||
+       startsWith(github.event.pull_request.head.ref, 'hotfix/'))
+    runs-on: ubuntu-24.04-arm
+    permissions:
+      contents: write
+    outputs:
+      tag: ${{ steps.tag.outputs.tag }}
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ github.event.pull_request.merge_commit_sha }}
+      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+      - name: Tag the merge commit
+        id: tag
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          HEAD_REF: ${{ github.event.pull_request.head.ref }}
+          MERGE_SHA: ${{ github.event.pull_request.merge_commit_sha }}
+          # The task asks for confirmation when run by hand.
+          MISE_YES: "1"
+        run: |
+          version="${HEAD_REF#*/}"
+          version="${version#v}"
+          mise run tag "$version" "$MERGE_SHA"
+          echo "tag=v$version" >> "$GITHUB_OUTPUT"
+
+  release:
+    name: Release
+    needs: tag
+    permissions:
+      contents: write
+    uses: ./.github/workflows/release.yml
+    with:
+      tag: ${{ needs.tag.outputs.tag }}
