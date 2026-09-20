@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+#MISE description="Create the release tag v<version> at a commit through the GitHub API (run by the Tag Release workflow)"
+#MISE confirm="Create a release tag on GitHub?"
+#USAGE arg "<version>" help="The version to tag, for example 1.2.3; CHANGELOG.md must have a section for it"
+#USAGE arg "<sha>" help="The commit to tag, normally the merge commit on master"
+set -euo pipefail
+
+# GITHUB_TOKEN needs contents: write. GITHUB_REPOSITORY is set by GitHub
+# Actions; elsewhere it is read from the origin remote.
+: "${GITHUB_TOKEN:?set GITHUB_TOKEN to a token that may create tags}"
+cd "$MISE_PROJECT_ROOT"
+repo="${GITHUB_REPOSITORY:-$(gh repo view --json nameWithOwner --jq .nameWithOwner)}"
+exec dagger call tag --version "$usage_version" --sha "$usage_sha" --repo "$repo" --token env://GITHUB_TOKEN

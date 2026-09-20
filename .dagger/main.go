@@ -30,6 +30,9 @@ const (
 // are pinned.
 var hugoPin = regexp.MustCompile(`(?m)^hugo\s*=\s*"([^"]+)"`)
 
+// semver is a plain release version: no "v" prefix, no pre-release suffix.
+var semver = regexp.MustCompile(`^[0-9]+\.[0-9]+\.[0-9]+$`)
+
 type Emend struct{}
 
 // toolchain returns a container with the standard (non-extended) Hugo release
@@ -265,6 +268,57 @@ func (m *Emend) CspHash(
 		return "", fmt.Errorf("built script is %s but scripts/inline-script.sha256 records %s: update that file and README.md", found, recorded)
 	}
 	return fmt.Sprintf("script-src 'self' '%s'", found), nil
+}
+
+// Tag creates the git tag v<version> at a commit, through the GitHub API. It
+// refuses a version that is not plain semver or that has no "## [<version>]"
+// section in CHANGELOG.md, because that section becomes the release notes.
+// Re-running it is safe: a tag that already points at the commit is accepted,
+// and one that points elsewhere is an error (release tags are immutable).
+func (m *Emend) Tag(
+	ctx context.Context,
+	// +defaultPath="/"
+	// +ignore=[".git", ".dagger", ".github", "docs", "dist", "exampleSite/public", "exampleSite/resources", "**/.DS_Store"]
+	source *dagger.Directory,
+	// The version to tag, for example 1.2.3 (a leading "v" is accepted).
+	version string,
+	// The commit to tag: the merge commit on master.
+	sha string,
+	// The GitHub repository, as owner/name.
+	repo string,
+	// A token that may create refs (contents: write).
+	token *dagger.Secret,
+) (string, error) {
+	version = strings.TrimPrefix(version, "v")
+	if !semver.MatchString(version) {
+		return "", fmt.Errorf("version %q is not MAJOR.MINOR.PATCH", version)
+	}
+	changelog, err := source.File("CHANGELOG.md").Contents(ctx)
+	if err != nil {
+		return "", err
+	}
+	if !strings.Contains(changelog, "\n## ["+version+"]") {
+		return "", fmt.Errorf("CHANGELOG.md has no \"## [%s]\" section: cut the release in the changelog first", version)
+	}
+
+	return dag.Container().
+		From(alpineImage).
+		WithExec([]string{"apk", "add", "--no-cache", "github-cli"}).
+		WithSecretVariable("GH_TOKEN", token).
+		WithEnvVariable("GH_REPO", repo).
+		WithEnvVariable("TAG", "v"+version).
+		WithEnvVariable("SHA", sha).
+		// Creating a ref is a side effect: never let Dagger serve it from cache.
+		WithEnvVariable("RUN_AT", time.Now().UTC().Format(time.RFC3339Nano)).
+		WithExec([]string{"sh", "-euc", `
+existing="$(gh api "repos/$GH_REPO/git/ref/tags/$TAG" --jq .object.sha 2>/dev/null || true)"
+if [ -n "$existing" ] && [ "$existing" != "$SHA" ]; then
+  echo "$TAG already exists at $existing, not $SHA" >&2
+  exit 1
+fi
+[ -n "$existing" ] || gh api -X POST "repos/$GH_REPO/git/refs" -f ref="refs/tags/$TAG" -f sha="$SHA" >/dev/null
+printf '%s' "$TAG"`}).
+		Stdout(ctx)
 }
 
 // Release tests and packages the theme, then publishes the tarball on the

@@ -1,19 +1,29 @@
 name: Release
 
-# Cut a release from trunk by pushing a semver tag:
-#   git tag v1.2.3 && git push origin v1.2.3
-# Hugo Modules resolve the same tags, so module users and tarball users get
-# identical versions. Dagger tests, packages and publishes the tarball.
+# Publishes a release for a semver tag: Dagger tests, packages and attaches
+# emend-<tag>.tar.gz, with the tag's CHANGELOG.md section as the notes. Hugo
+# Modules resolve the same tags, so module users and tarball users get
+# identical versions.
+#
+# Two ways in:
+#   - the Tag Release workflow calls it after a release/* pull request merges
+#   - a tag pushed by hand: git tag -a v1.2.3 -m v1.2.3 && git push origin v1.2.3
 on:
   push:
     tags:
       - "v*.*.*"
+  workflow_call:
+    inputs:
+      tag:
+        description: The tag to release, for example v1.2.3. It must already exist.
+        required: true
+        type: string
 
 permissions:
   contents: write
 
 concurrency:
-  group: release-${{ github.ref }}
+  group: release-${{ inputs.tag || github.ref_name }}
   cancel-in-progress: false
 
 jobs:
@@ -23,10 +33,11 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
+          ref: refs/tags/${{ inputs.tag || github.ref_name }}
           # Full history, to check the tag against master below.
           fetch-depth: 0
       - name: Require the tag to be on master
-        run: git merge-base --is-ancestor "$GITHUB_SHA" origin/master
+        run: git merge-base --is-ancestor HEAD origin/master
       - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
       - name: Check tools
         run: mise run setup --frozen
@@ -35,4 +46,5 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           # The task asks for confirmation when run by hand.
           MISE_YES: "1"
-        run: mise run release "$GITHUB_REF_NAME"
+          TAG: ${{ inputs.tag || github.ref_name }}
+        run: mise run release "$TAG"
