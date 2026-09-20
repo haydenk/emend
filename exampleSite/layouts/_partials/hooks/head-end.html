@@ -1,0 +1,8 @@
+{{- /* Fixture hook: load flashcards.css only on pages that use the shortcodes.
+     It lives in layouts/_partials/ and single-after-content.html in the legacy
+     layouts/partials/, so both hook locations stay covered by the tests. */ -}}
+{{- if or (.HasShortcode "flashcards") (.HasShortcode "flashcard") -}}
+    {{- with resources.Get "css/flashcards.css" | minify | fingerprint }}
+    <link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
+    {{- end }}
+{{- end -}}

@@ -1,0 +1,14 @@
+{{- /* Fixture copy of a site shortcode: linked, responsive banner from a global asset. */ -}}
+{{- $img := resources.Get (.Get "src") -}}
+{{- if not $img -}}
+  {{- errorf "series-banner: asset %q not found (page %s)" (.Get "src") .Page.Path -}}
+{{- end -}}
+{{- $small := $img.Process "resize 450x webp q75" -}}
+{{- $medium := $img.Process "resize 600x webp q75" -}}
+<a class="series-banner" href="{{ .Get "href" }}">
+  <img src="{{ $medium.RelPermalink }}"
+       srcset="{{ $small.RelPermalink }} {{ $small.Width }}w, {{ $medium.RelPermalink }} {{ $medium.Width }}w"
+       sizes="(min-width: 700px) 600px, calc(100vw - 3rem)"
+       width="{{ $medium.Width }}" height="{{ $medium.Height }}"
+       alt="{{ .Get "alt" }}" decoding="async" fetchpriority="high">
+</a>

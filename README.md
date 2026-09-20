@@ -1,50 +1,82 @@
-![banner](https://raw.githubusercontent.com/tomfran/typo/main/images/banner-light.webp#gh-light-mode-only)
-![banner](https://raw.githubusercontent.com/tomfran/typo/main/images/banner-dark.webp#gh-dark-mode-only)
+# Emend
 
-<div align="center">
+![Emend: a minimal Hugo theme for writing](exampleSite/static/og-image.png)
 
-[![wiki](https://img.shields.io/badge/doc-wiki-red?style=for-the-badge)](https://tomfran.github.io/typo-wiki/)
-[![GitHub Release](https://img.shields.io/github/v/release/tomfran/typo?style=for-the-badge)](https://github.com/tomfran/typo/releases/latest)
-[![last-commit](https://img.shields.io/github/last-commit/tomfran/typo?style=for-the-badge)](https://github.com/tomfran/typo/commits/)
-![stars](https://img.shields.io/github/stars/tomfran/typo?style=for-the-badge&color=orange)
+A minimal [Hugo](https://gohugo.io) theme for writing: long-form posts and
+notes, tags and series, an archive, and very little else.
+**[See the live demo](https://haydenk.github.io/emend/).**
 
-</div>
+- **Plain CSS, no build step.** It builds on standard Hugo. No Sass, PostCSS
+  or Node.
+- **System fonts.** No web fonts to download.
+- **Light, dark and auto.** One button cycles the three, and the choice applies
+  before first paint.
+- **Strict-CSP ready.** No third-party requests, one inline script allowed by
+  hash, and no inline event handlers.
+- **Fast by default.** Inlined stylesheet, one small deferred script, and
+  images served as sized, lazy-loaded WebP with a `srcset`.
+- **Accessible.** Landmarks, a skip link, one `<h1>` per page, visible focus,
+  AA contrast in both modes, and reduced-motion support.
+- **Extensible without forking.** Hooks, a custom stylesheet, palettes and
+  icons, all from the site.
 
-# Typo, a Hugo theme.
+## Quick start
 
-Typo is a theme backed by simplicity, as you can see in the screenshots below. The goal was to have a website centered around content and nothing more.
+Emend needs Hugo 0.158.0 or later (the standard edition is enough).
 
-**Homepage**
+```toml
+# hugo.toml
+[[module.imports]]
+path = "github.com/haydenk/emend"
 
-![1](https://raw.githubusercontent.com/tomfran/typo/main/images/1.webp)
+# Hugo does not merge these from a theme, so the site sets them:
+[markup.highlight]
+noClasses = false
 
-**Article**
+[markup.goldmark.parser]
+wrapStandAloneImageWithinParagraph = false
+```
 
-![2](https://raw.githubusercontent.com/tomfran/typo/main/images/2.webp)
+Or extract a [release](https://github.com/haydenk/emend/releases) tarball into
+`themes/` and set `theme = "emend"`.
+[Getting started](docs/getting-started.md) has a complete minimal site.
 
-![3](https://raw.githubusercontent.com/tomfran/typo/main/images/3.webp)
+## Content Security Policy
 
-## Wiki
+The theme's one inline script is allowed with:
 
-Typo's [Wiki](https://tomfran.github.io/typo-wiki/) is the place to find instructions on how to [setup](https://tomfran.github.io/typo-wiki/setup) the theme and an overview of the available [features](https://tomfran.github.io/typo-wiki/features). 
+```
+script-src 'self' 'sha256-p0dTuQa+s03teJj7uBSVbGnSrucoYbl82pqs3gwbfBM='
+```
 
-Some of the most relevant are: heading auto-numbering, dark mode, color palettes, dark and light images, comments, etc.
+`style-src` needs `'unsafe-inline'`. The hash is the same with and without
+`hugo --minify`. [Content Security Policy](docs/content-security-policy.md)
+has the full policy and a checker you can run on your own site.
 
-## Support
+## Documentation
 
-If you use the theme or found it useful you can support me by leaving a star ⭐ to Typo's Github repository.
+| Guide | What it covers |
+| --- | --- |
+| [Getting started](docs/getting-started.md) | Requirements, install, required configuration, a minimal site |
+| [Configuration](docs/configuration.md) | Every parameter, menus, pagination, taxonomies |
+| [Writing content](docs/content.md) | Tags and series, archive, images, code, descriptions |
+| [Customizing](docs/customizing.md) | Hooks, custom CSS, dark mode, palettes, icons, favicons |
+| [Content Security Policy](docs/content-security-policy.md) | The policy, the script hash, the checker |
+| [Migrating an existing site](docs/migrating.md) | A checklist for moving a site onto the theme |
+| [Development](docs/development.md) | mise tasks, the Dagger pipeline, tests, CI and releases |
 
-[Contributions](https://github.com/tomfran/typo/blob/main/CONTRIBUTING.md) are always welcome, feel free to open issues and PRs with fixes or new features.
+## Contributing
 
-## Typo Users
+Bug reports and pull requests are welcome: see
+[CONTRIBUTING.md](CONTRIBUTING.md) and the
+[Code of Conduct](CODE_OF_CONDUCT.md). Questions go to
+[Discussions](https://github.com/haydenk/emend/discussions), and security
+reports to the [Security policy](.github/SECURITY.md). Changes are recorded in
+the [changelog](CHANGELOG.md).
 
-If you're using Typo for your website, feel free to add your website to [the list](https://github.com/tomfran/typo/blob/main/USERS.md) alongside what you do! 😊
+## License
 
-## Questions or ideas? 
-
-Use the [discussion tab](https://github.com/tomfran/typo/discussions) to share ideas/tips/questions about Typo or Hugo in general!
-
-## References
-
-The SVGs for social icons are taken from [Simple Icons](https://github.com/simple-icons/simple-icons).
-Every SVG present on the website is usable on the theme.
+[AGPL-3.0-or-later](LICENSE). Emend is a hard fork of
+[Typo](https://github.com/tomfran/typo) by Francesco Tomaselli, which is MIT
+licensed; that notice, and the credit for the Simple Icons brand icons, are
+kept in [NOTICE](NOTICE).

@@ -1,0 +1,38 @@
+# Path-based labels for pull requests (actions/labeler). Every label used here
+# is defined in .github/labels.json.
+
+"area: templates":
+  - changed-files:
+      - any-glob-to-any-file: ["layouts/**", "archetypes/**"]
+
+"area: styles":
+  - changed-files:
+      - any-glob-to-any-file: ["assets/css/**", "scripts/gen-syntax-css.py"]
+
+"area: scripts":
+  - changed-files:
+      - any-glob-to-any-file: ["assets/js/**"]
+
+"area: assets":
+  - changed-files:
+      - any-glob-to-any-file: ["static/**", "scripts/gen-icons.py", "scripts/og-image.html"]
+
+"area: example-site":
+  - changed-files:
+      - any-glob-to-any-file: ["exampleSite/**"]
+
+"area: tooling":
+  - changed-files:
+      - any-glob-to-any-file: [".mise.toml", ".mise/**", "scripts/**", ".dagger/**", "dagger.json"]
+
+"area: ci":
+  - changed-files:
+      - any-glob-to-any-file: [".github/**"]
+
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: ["**/*.md", "NOTICE", "LICENSE"]
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file: [".mise.toml", ".dagger/go.mod", ".dagger/go.sum", "go.mod"]

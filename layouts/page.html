@@ -1,0 +1,73 @@
+{{ define "main" }}
+
+{{ partial "breadcrumbs.html" . }}
+
+<div{{ if .Param "autonumber" }} class="autonumber"{{ end }}>
+  <article>
+    <header class="single-intro-container">
+      <h1 class="single-title">{{ .Title }}</h1>
+      {{- with .Param "summary" }}
+      <p class="single-summary">{{ . | markdownify }}</p>
+      {{- end }}
+
+      {{- if or (.Param "author") .Date (.Param "readTime") }}
+      <div class="single-subsummary">
+        {{- with .Param "author" }}
+        <p class="author">{{ . }}</p>
+        {{- end }}
+        <p class="single-date">
+          {{- with .Date }}
+          <time datetime="{{ . | time.Format "2006-01-02T15:04:05-07:00" }}">
+            {{- . | time.Format (default ":date_long" site.Params.singleDateFormat) -}}
+          </time>
+          {{- end }}
+          {{- if .Param "readTime" }}
+          {{- if .Date }} &middot; {{ end }}{{ .ReadingTime }} min read
+          {{- end }}
+        </p>
+      </div>
+      {{- end }}
+    </header>
+
+    {{- if .Param "showTags" }}
+    {{- with .GetTerms "tags" }}
+    <ul class="single-tags" aria-label="Tags">
+      {{- range . }}
+      <li><a href="{{ .RelPermalink }}">#{{ .LinkTitle | urlize }}</a></li>
+      {{- end }}
+    </ul>
+    {{- end }}
+    {{- end }}
+
+    {{- with .GetTerms "series" }}
+    <p class="single-series">Series:
+      {{- range $i, $term := . }}{{ if $i }},{{ end }} <a href="{{ .RelPermalink }}">{{ .LinkTitle }}</a>{{ end }}
+    </p>
+    {{- end }}
+
+    {{- /* A page without headings yields an empty <nav>; skip the block then. */}}
+    {{- $toc := .TableOfContents }}
+    {{- if and (.Param "toc") (strings.Contains $toc "<li") }}
+    <details class="toc" open>
+      <summary>Table of contents</summary>
+      {{ replace $toc `<nav id="TableOfContents">` `<nav id="TableOfContents" aria-label="Table of contents">` | safeHTML }}
+    </details>
+    {{- end }}
+
+    <div class="single-content">
+      {{ .Content }}
+    </div>
+
+    {{ partial "functions/get_hook.html" (dict "hook" "single-after-content" "context" .) }}
+  </article>
+
+  {{ if not (.Param "hidePagination") }}
+  {{ partial "pagination-single.html" . }}
+  {{ end }}
+
+  {{ if not (.Param "hideBackToTop") }}
+  <p class="back-to-top"><a href="#top">Back to top</a></p>
+  {{ end }}
+</div>
+
+{{ end }}

@@ -1,0 +1,6 @@
+{{- /* The theme ships a generic mark in static/ (see scripts/gen-icons.py). A site
+     replaces it by adding files with the same names to its own static/, or
+     overrides this partial for a different set. */ -}}
+<link rel="icon" href="{{ "favicon.ico" | relURL }}" sizes="32x32">
+<link rel="icon" href="{{ "favicon.svg" | relURL }}" type="image/svg+xml">
+<link rel="apple-touch-icon" href="{{ "apple-touch-icon.png" | relURL }}">

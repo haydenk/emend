@@ -1,0 +1,13 @@
+[
+  { "name": "bug", "color": "d73a4a", "description": "Something is not working" },
+  { "name": "feature", "color": "a2eeef", "description": "New feature or enhancement" },
+  { "name": "documentation", "color": "0075ca", "description": "README, comments or the demo site's content" },
+  { "name": "dependencies", "color": "0366d6", "description": "Tool, action or module version updates" },
+  { "name": "area: templates", "color": "5319e7", "description": "layouts/: templates, partials, hooks and render hooks" },
+  { "name": "area: styles", "color": "5319e7", "description": "assets/css/: stylesheets, palettes and syntax highlighting" },
+  { "name": "area: scripts", "color": "5319e7", "description": "assets/js/: the theme button" },
+  { "name": "area: assets", "color": "5319e7", "description": "static/: icons and the share image" },
+  { "name": "area: example-site", "color": "5319e7", "description": "exampleSite/: the demo and test fixtures" },
+  { "name": "area: tooling", "color": "5319e7", "description": "mise tasks, scripts/ and the Dagger pipeline" },
+  { "name": "area: ci", "color": "5319e7", "description": ".github/: workflows, templates and repository settings" }
+]

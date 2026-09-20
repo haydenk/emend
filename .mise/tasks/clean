@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Remove build output, Hugo caches and release artifacts"
+set -euo pipefail
+
+rm -rf "$MISE_PROJECT_ROOT/exampleSite/public" \
+  "$MISE_PROJECT_ROOT/exampleSite/resources" \
+  "$MISE_PROJECT_ROOT/dist"
+echo "Cleaned"

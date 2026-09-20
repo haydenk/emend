@@ -1,0 +1,12 @@
+{{- /* Fixture copy of a site shortcode: a collapsed <details> deck, no JavaScript. */ -}}
+{{- $count := len (findRE `<label class="flashcard"` .Inner) -}}
+<details class="flashcards-toggle"{{ if eq (.Get "open") "true" }} open{{ end }}>
+  <summary>
+    <span class="flashcards-toggle-show">Show flash cards</span>
+    <span class="flashcards-toggle-hide">Hide flash cards</span>
+    <span class="flashcards-toggle-count">{{ $count }} {{ cond (eq $count 1) "card" "cards" }}</span>
+  </summary>
+  <div class="flashcards">
+{{- .Inner -}}
+  </div>
+</details>

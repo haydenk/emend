@@ -1,0 +1,75 @@
+<!doctype html>
+<!-- Source of exampleSite/static/og-image.png, the demo site's share card.
+     Rendered at 1200x630 by `mise run og-image` (headless Chrome). It uses the
+     theme's own font stacks and default dark palette, and the mark comes from
+     static/favicon.svg, so the card always matches the theme.
+     The theme's fallback share image, static/og-image.png, stays a plain mark:
+     a site using the theme must not inherit an advert for it. -->
+<html lang="en">
+<meta charset="utf-8">
+<title>Emend share card</title>
+<style>
+  :root {
+    --background: rgb(20, 20, 20);
+    --primary: rgb(218, 218, 218);
+    --secondary: rgb(150, 150, 150);
+    --font-body: ui-serif, Georgia, "Noto Serif", serif;
+    --font-mono: ui-monospace, SFMono-Regular, Menlo, Consolas, "Liberation Mono", monospace;
+  }
+  * { box-sizing: border-box; margin: 0; }
+  html, body { width: 1200px; height: 630px; overflow: hidden; }
+  body {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 72px 84px 64px;
+    background: var(--background);
+    color: var(--primary);
+    font-family: var(--font-body);
+  }
+  header { display: flex; align-items: flex-start; gap: 36px; }
+  /* The mark is optically centred on the title line, not on title + tagline. */
+  header img { width: 148px; height: 148px; margin: -8px 0 0 -18px; }
+  h1 { font-size: 124px; line-height: 1; letter-spacing: -0.01em; }
+  .tagline { margin-top: 10px; font-size: 40px; color: var(--secondary); }
+  ul {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px 56px;
+    list-style: none;
+    padding: 0;
+    font-family: var(--font-mono);
+    font-size: 29px;
+    white-space: nowrap;
+  }
+  li::before { content: "/"; color: var(--secondary); margin-right: 0.1em; }
+  footer {
+    display: flex;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 24px;
+    color: var(--secondary);
+  }
+</style>
+<body>
+  <header>
+    <img src="../static/favicon.svg" alt="">
+    <div>
+      <h1>Emend</h1>
+      <p class="tagline">A minimal Hugo theme for writing.</p>
+    </div>
+  </header>
+  <ul>
+    <li>plain css, no build step</li>
+    <li>light, dark and auto</li>
+    <li>system fonts, no web fonts</li>
+    <li>strict-csp ready</li>
+    <li>no third-party requests</li>
+    <li>series, archive, toc</li>
+  </ul>
+  <footer>
+    <span>hugo 0.158+</span>
+    <span>agpl-3.0-or-later</span>
+  </footer>
+</body>
+</html>

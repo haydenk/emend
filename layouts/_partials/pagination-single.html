@@ -1,0 +1,16 @@
+{{ if or .NextInSection .PrevInSection }}
+<nav class="single-pagination" aria-label="Older and newer pages">
+    <hr>
+    <div>
+        {{- /* Same direction as list pagination: newer on the left, older on the
+             right. With Hugo's default date order, Next is newer and Prev older. */}}
+        <div class="single-pagination-prev">
+            {{ with .NextInSection }}<a href="{{ .RelPermalink }}" rel="next">&larr;&nbsp;{{ .Title }}</a>{{ end }}
+        </div>
+        <div class="single-pagination-next">
+            {{ with .PrevInSection }}<a href="{{ .RelPermalink }}" rel="prev">{{ .Title }}&nbsp;&rarr;</a>{{ end }}
+        </div>
+    </div>
+    <hr>
+</nav>
+{{ end }}

@@ -1,0 +1,22 @@
+{{- /* Plain CSS, concatenated and minified. A site adds its own rules by creating
+     assets/css/custom.css.
+
+     By default the stylesheet is inlined: it is small (about 3 KB compressed),
+     and a linked stylesheet is a render-blocking request that delays first
+     paint by a full round trip. Inlining needs style-src 'unsafe-inline', which
+     the theme's table alignment attributes need anyway. Set
+     params.inlineCSS = false to link a fingerprinted file instead. */ -}}
+{{- $palette := printf "css/colors/%s.css" (site.Params.colorPalette | default "default") }}
+{{- $css := slice }}
+{{- range slice "css/reset.css" "css/vars.css" $palette "css/syntax-highlighting.css" "css/main.css" "css/custom.css" }}
+  {{- with resources.Get . }}{{ $css = $css | append . }}{{ end }}
+{{- end }}
+{{- with $css | resources.Concat "css/emend.css" | minify }}
+  {{- if site.Params.inlineCSS | default true }}
+<style>{{ .Content | safeCSS }}</style>
+  {{- else }}
+    {{- with . | fingerprint }}
+<link rel="stylesheet" href="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}">
+    {{- end }}
+  {{- end }}
+{{- end }}

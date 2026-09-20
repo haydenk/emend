@@ -1,0 +1,56 @@
+name: Feature Request
+description: Propose a new feature or enhancement
+labels: ["feature"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for suggesting a feature. The theme stays deliberately small: plain CSS, no build step, no third-party hosts, and one inline script. Proposals that keep to that are the easiest to accept.
+
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: A short description of the feature.
+    validations:
+      required: true
+
+  - type: textarea
+    id: motivation
+    attributes:
+      label: Motivation
+      description: Why is this feature needed? What problem does it solve? Could a site do it today with a hook or `custom.css`?
+    validations:
+      required: true
+
+  - type: textarea
+    id: solution
+    attributes:
+      label: Proposed Solution
+      description: Describe how you'd like to see this implemented, if you have ideas.
+
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance Criteria
+      description: What does "done" look like for this feature?
+      placeholder: |
+        - [ ] ...
+        - [ ] A fixture in exampleSite/ and a check in scripts/check-output.sh cover it
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Relevant Component
+      options:
+        - Templates and hooks (layouts/)
+        - Styles, palettes and syntax highlighting (assets/css/)
+        - Theme button (assets/js/)
+        - Images and the image render hook
+        - Icons and share image (static/)
+        - Example site (exampleSite/)
+        - Tooling (mise tasks, scripts/, Dagger)
+        - CI/CD Pipeline
+        - New Component
+    validations:
+      required: true

@@ -1,0 +1,37 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+{{- /* Lets the browser paint a dark canvas at once, before any CSS is parsed. */}}
+<meta name="color-scheme" content="light dark">
+
+{{ partial "functions/get_hook.html" (dict "hook" "head-start" "context" .) }}
+
+{{- /*
+  The only inline script in the theme. It must run before first paint so a
+  stored light/dark choice never flashes the wrong theme. A strict CSP has to
+  allow it by sha256 hash. It is written in the exact form Hugo's minifier
+  emits, so the hash is the same with and without --minify. After changing it,
+  run `mise run csp-hash` and update scripts/inline-script.sha256 and README.md.
+*/ -}}
+<script>(function(){try{var e=localStorage.getItem("theme");(e==="light"||e==="dark")&&document.documentElement.setAttribute("data-theme",e)}catch{}})()</script>
+
+<title>{{ if .IsHome }}{{ site.Title }}{{ else }}{{ printf "%s | %s" .Title site.Title }}{{ end }}</title>
+
+{{- $description := or (partial "functions/plain-summary.html" .) site.Params.description "" | truncate 160 }}
+{{ with $description }}<meta name="description" content="{{ . }}">{{ end }}
+<link rel="canonical" href="{{ .Permalink }}">
+
+{{ partial "head/favicon.html" . }}
+
+{{ with .OutputFormats.Get "rss" -}}
+{{ printf `<link rel=%q type=%q href=%q title=%q>` .Rel .MediaType.Type .Permalink site.Title | safeHTML }}
+{{ end }}
+
+{{ partial "opengraph.html" (dict "page" . "description" $description) }}
+
+{{ partialCached "head/css.html" . }}
+
+{{- with resources.Get "js/theme-toggle.js" | minify | fingerprint }}
+<script defer src="{{ .RelPermalink }}" integrity="{{ .Data.Integrity }}"></script>
+{{- end }}
+
+{{ partial "functions/get_hook.html" (dict "hook" "head-end" "context" .) }}

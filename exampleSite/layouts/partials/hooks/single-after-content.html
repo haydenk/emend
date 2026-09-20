@@ -1,0 +1,19 @@
+{{- /*
+  Fixture hook: click-to-load YouTube facade after the content. The real
+  player only loads on click. Needs CSP frame-src for www.youtube.com and
+  img-src for i.ytimg.com; the inline styles need style-src 'unsafe-inline'.
+*/ -}}
+{{- with .Params.youtube }}
+<div class="video">
+    <iframe
+        src="https://www.youtube.com/embed/{{ . }}"
+        srcdoc="<style>*{padding:0;margin:0;overflow:hidden}html,body{height:100%}a{display:flex;height:100%;position:relative}img{width:100%;height:100%;object-fit:cover}span{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:4rem;color:#fff;text-shadow:0 0 0.5em #000}</style><a href='https://www.youtube.com/embed/{{ . }}?autoplay=1'><img src='https://i.ytimg.com/vi/{{ . }}/hqdefault.jpg' alt='Play video'><span>&#9654;</span></a>"
+        title="Video"
+        loading="lazy"
+        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+        referrerpolicy="strict-origin-when-cross-origin"
+        allowfullscreen
+        style="aspect-ratio: 16/9; width: 100%; border: 0;">
+    </iframe>
+</div>
+{{- end }}

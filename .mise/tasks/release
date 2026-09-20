@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+#MISE description="Test, package and publish the tarball on the GitHub release for a tag (run by the Release workflow)"
+#MISE confirm="Publish a GitHub release?"
+#USAGE arg "<tag>" help="The git tag to release, for example v1.2.3; it must already be pushed"
+set -euo pipefail
+
+# GITHUB_TOKEN needs contents: write. GITHUB_REPOSITORY is set by GitHub
+# Actions; elsewhere it is read from the origin remote.
+: "${GITHUB_TOKEN:?set GITHUB_TOKEN to a token that may write releases}"
+cd "$MISE_PROJECT_ROOT"
+repo="${GITHUB_REPOSITORY:-$(gh repo view --json nameWithOwner --jq .nameWithOwner)}"
+exec dagger call release --tag "$usage_tag" --repo "$repo" --token env://GITHUB_TOKEN

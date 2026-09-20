@@ -1,0 +1,22 @@
+name: Labeler
+
+# Labels pull requests from the paths they touch (.github/labeler.yml).
+# pull_request_target gives the token write access for pull requests from
+# forks; it is safe here because no code from the pull request is checked out
+# or run.
+on:
+  pull_request_target:
+    types: [opened, reopened, synchronize]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  label:
+    name: Label Pull Request
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/labeler@bf12e9b00b37c5c0ca2b87b79b2daf7891dbda13 # v7.0.0
+        with:
+          sync-labels: true

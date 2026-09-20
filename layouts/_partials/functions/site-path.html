@@ -1,0 +1,12 @@
+{{- /*
+    Returns a URL a site author wrote by hand, made to work when the site is
+    served from a subpath (https://example.org/blog/). Hugo leaves a
+    root-relative URL such as "/images/a.png" alone, so under a subpath it
+    would point outside the site: the site's base path is put in front of it.
+    Anything else (relative, absolute, protocol-relative) is returned unchanged.
+*/ -}}
+{{- $url := . -}}
+{{- if and (hasPrefix $url "/") (not (hasPrefix $url "//")) -}}
+    {{- $url = printf "%s%s" (strings.TrimSuffix "/" site.Home.RelPermalink) $url -}}
+{{- end -}}
+{{- return $url -}}

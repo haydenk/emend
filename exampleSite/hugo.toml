@@ -1,0 +1,72 @@
+# Development and test site for the theme. Run it with `mise run serve`.
+baseURL = "https://example.org/"
+locale = "en-US"
+title = "Emend"
+# No `theme` here: the theme is the repository root, and the mise tasks point
+# Hugo at it through HUGO_THEME / HUGO_THEMESDIR, whatever the checkout is named.
+enableRobotsTXT = true
+
+[taxonomies]
+tag = "tags"
+series = "series"
+
+[pagination]
+pagerSize = 5
+
+[params]
+description = "A demo site for Emend, a minimal Hugo theme."
+toc = true
+readTime = true
+showTags = true
+listSummaries = true
+homeCollection = ["posts", "guides", "notes"]
+homeCollectionTitle = "Latest"
+
+[[params.social]]
+name = "github"
+title = "GitHub"
+url = "https://example.org/github"
+rel = "me"
+
+[[params.social]]
+name = "rss"
+title = "RSS feed"
+url = "/index.xml"
+
+[[menus.main]]
+name = "Posts"
+pageRef = "/posts"
+weight = 10
+
+[[menus.main]]
+name = "Guides"
+pageRef = "/guides"
+weight = 20
+
+[[menus.main]]
+name = "Notes"
+pageRef = "/notes"
+weight = 30
+
+[[menus.main]]
+name = "Tags"
+pageRef = "/tags"
+weight = 40
+
+[[menus.main]]
+name = "Series"
+pageRef = "/series"
+weight = 50
+
+[[menus.main]]
+name = "Archive"
+pageRef = "/archive"
+weight = 60
+
+# Sites using the theme need both markup settings: the stylesheet styles
+# Chroma classes, and the image hook relies on block-level images.
+[markup.highlight]
+noClasses = false
+
+[markup.goldmark.parser]
+wrapStandAloneImageWithinParagraph = false

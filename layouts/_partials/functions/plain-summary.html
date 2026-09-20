@@ -1,0 +1,12 @@
+{{- /*
+    Returns one line of plain text describing a page: its description, else its
+    first paragraphs of prose. Only <p> elements are used, so outline-style
+    content (headings, nested lists of references, code) never leaks into
+    previews as a run of fragments. The caller truncates the result.
+*/ -}}
+{{- $text := .Description -}}
+{{- if not $text -}}
+    {{- $paragraphs := findRE `(?s)<p[\s>].*?</p>` .Content 3 -}}
+    {{- $text = delimit $paragraphs " " | plainify | htmlUnescape | replaceRE `\s+` " " | strings.TrimSpace -}}
+{{- end -}}
+{{- return $text -}}

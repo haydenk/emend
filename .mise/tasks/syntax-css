@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Regenerate assets/css/syntax-highlighting.css from two Chroma styles (light-dark pairs)"
+#USAGE flag "--light <style>" help="Chroma style for light mode (default: github)"
+#USAGE flag "--dark <style>" help="Chroma style for dark mode (default: github-dark)"
+set -euo pipefail
+
+exec python3 "$MISE_PROJECT_ROOT/scripts/gen-syntax-css.py" \
+  --light "${usage_light:-github}" --dark "${usage_dark:-github-dark}"

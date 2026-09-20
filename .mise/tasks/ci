@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Everything CI runs, in the Dagger pipeline: tests, and a release tarball that must install cleanly"
+set -euo pipefail
+
+cd "$MISE_PROJECT_ROOT"
+exec dagger call ci

@@ -1,3 +1,3 @@
-module github.com/tomfran/typo/v3
+module github.com/haydenk/emend
 
 go 1.20

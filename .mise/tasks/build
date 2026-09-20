@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Build exampleSite in the Dagger pipeline and export it to exampleSite/public"
+set -euo pipefail
+
+cd "$MISE_PROJECT_ROOT"
+exec dagger call build export --path exampleSite/public

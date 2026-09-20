@@ -1,0 +1,17 @@
+# Keeps the SHA-pinned actions current. Dependabot reads the "# vX.Y.Z"
+# comment beside each pin and updates both.
+#
+# Not covered: the tool versions in .mise.toml (hugo, dagger, go), which
+# Dependabot cannot read, and .dagger/go.mod, which `dagger develop` owns.
+version: 2
+updates:
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+    labels:
+      - dependencies
+      - "area: ci"
+    groups:
+      actions:
+        patterns: ["*"]

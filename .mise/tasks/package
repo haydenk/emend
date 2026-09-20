@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Build and verify dist/emend-<version>.tar.gz in the Dagger pipeline"
+#USAGE arg "[version]" help="Version label for the tarball (default: git describe)"
+set -euo pipefail
+
+cd "$MISE_PROJECT_ROOT"
+version="${usage_version:-$(git describe --tags --always --dirty)}"
+exec dagger call package --version "$version" export --path "dist/emend-$version.tar.gz"

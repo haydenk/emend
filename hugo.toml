@@ -1,19 +1,31 @@
-baseURL = 'https://example.org/'
-languageCode = 'en-us'
-defaultContentLanguage = 'en-us'
-title = 'typo'
+# Theme defaults only. The development/demo site lives in exampleSite/.
 
 [module]
 [module.hugoVersion]
 extended = false
-min = "0.116.0"
+min = "0.158.0"
 
-# Default config
+[params]
+# Optional parameters with example values (none of these is set by default):
+# colorPalette = "default"   # a file in assets/css/colors/
+# inlineCSS = true           # false links the stylesheet instead of inlining it
+# toc = true                 # table of contents on single pages
+# readTime = true            # "N min read" on single pages
+# showTags = true            # tag links on single pages
+# listSummaries = false      # plain-text summaries in page lists
+# footerContent = ""         # Markdown; defaults to "(c) <year> <site title>"
+# homeCollection = "posts"   # section listed on the home page
+
 [params.breadcrumbs]
 enabled = true
-showCurrentPage = true
+showCurrentPage = false
 home = "Home"
 
-[markup]
-[markup.highlight]
-noClasses = false
+# Hugo does not merge a theme's [markup] settings into a site, so a site using
+# this theme must set these itself (exampleSite/hugo.toml shows them):
+#
+#   [markup.highlight]
+#   noClasses = false            # the stylesheet styles Chroma classes
+#
+#   [markup.goldmark.parser]
+#   wrapStandAloneImageWithinParagraph = false   # standalone images become <figure>

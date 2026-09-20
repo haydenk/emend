@@ -1,0 +1,35 @@
+<div class="header">
+    {{- /* The site title is the page heading only on the home page. */ -}}
+    {{ if .IsHome }}
+    <h1 class="header-title"><a href="{{ site.Home.RelPermalink }}">{{ site.Title }}</a></h1>
+    {{ else }}
+    <p class="header-title"><a href="{{ site.Home.RelPermalink }}">{{ site.Title }}</a></p>
+    {{ end }}
+
+    <nav class="header-menu" aria-label="Main">
+        <ul>
+            {{- $page := . }}
+            {{- range site.Menus.main }}
+            <li>
+                <a href="{{ .URL }}"
+                    {{- if $page.IsMenuCurrent .Menu . }} aria-current="page"
+                    {{- else if or ($page.HasMenuCurrent .Menu .) (and .Page ($page.IsDescendant .Page)) }} aria-current="true"{{ end }}>
+                    {{- /* Typo's look: "/posts". The slash is decoration, so screen
+                         readers skip it and the link name stays "posts". */ -}}
+                    <span aria-hidden="true">/</span>{{ .Name | lower }}
+                </a>
+            </li>
+            {{- end }}
+            {{- /* Cycles auto -> light -> dark. CSS picks the icon from data-theme on
+                 <html>, so it is right before any script runs; theme-toggle.js
+                 un-hides the button, and without JavaScript the OS preference applies. */}}
+            <li>
+                <button type="button" class="theme-toggle" aria-label="Theme: auto mode" title="Theme: auto mode" hidden>
+                    <span class="theme-icon theme-icon-auto">{{ partial "icon.html" "theme-auto" }}</span>
+                    <span class="theme-icon theme-icon-light">{{ partial "icon.html" "theme-light" }}</span>
+                    <span class="theme-icon theme-icon-dark">{{ partial "icon.html" "theme-dark" }}</span>
+                </button>
+            </li>
+        </ul>
+    </nav>
+</div>

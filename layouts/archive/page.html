@@ -1,0 +1,20 @@
+{{ define "main" }}
+
+<div class="list-container">
+    {{ partial "breadcrumbs.html" . }}
+
+    <h1>{{ .Title }}</h1>
+    {{ .Content }}
+
+    {{- /* Every regular page except archive pages themselves, newest month first. */}}
+    {{- range (where site.RegularPages "Type" "ne" "archive").GroupByDate "2006-01" }}
+    <section class="archive-group">
+        <h2>{{ (index .Pages 0).Date | time.Format "January 2006" }}</h2>
+        {{- range .Pages }}
+        {{ partial "post-entry.html" . }}
+        {{- end }}
+    </section>
+    {{- end }}
+</div>
+
+{{ end }}

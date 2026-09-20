@@ -1,0 +1,16 @@
+<div class="post-line">
+    {{- if .Parent.Param "showListDate" | default true }}
+    <p class="line-date">
+        <time datetime="{{ .Date | time.Format "2006-01-02" }}">{{ .Date | time.Format (site.Params.listDateFormat | default "2 Jan 2006") }}</time>
+    </p>
+    {{- end }}
+
+    <div>
+        <p class="line-title"><a href="{{ .RelPermalink }}">{{ .Title }}</a></p>
+        {{- if site.Params.listSummaries }}
+        {{- with partial "functions/plain-summary.html" . }}
+        <p class="line-summary">{{ . | truncate 200 }}</p>
+        {{- end }}
+        {{- end }}
+    </div>
+</div>

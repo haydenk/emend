@@ -5,45 +5,21 @@
 }
 
 html {
-  -webkit-tap-highlight-color: transparent;
   overflow-y: scroll;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
 
-a,
-button,
-body,
-h1,
-h2,
-h3,
-h4,
-h5,
-h6 {
-  color: var(--primary);
-}
-
 body {
-  font-family:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu,
-    Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
-  font-size: 18px;
+  margin: 0;
+  font-size: 1.125rem;
   line-height: 1.6;
-  word-break: break-word;
-  background: var(--theme);
+  overflow-wrap: break-word;
 }
 
-article,
-aside,
-figcaption,
-figure,
-header,
-hgroup,
-main,
-nav,
-section,
-table {
-  display: block;
+a,
+button {
+  color: inherit;
 }
 
 h1,
@@ -61,60 +37,29 @@ h3,
 h4,
 h5,
 h6,
-p {
-  margin-top: 0;
-  margin-bottom: 0;
+p,
+figure {
+  margin: 0;
 }
 
 ul,
 ol {
+  margin: 0;
   padding: 0;
 }
 
-a {
-  text-decoration: none;
-}
-
-body,
-figure,
-ul {
-  margin: 0;
-}
-
-table {
-  width: 100%;
-  border-collapse: collapse;
-  border-spacing: 0;
-  overflow-x: auto;
-  word-break: keep-all;
-}
-
-button,
-input,
-textarea {
+button {
   padding: 0;
   font: inherit;
-  background: 0 0;
+  background: none;
   border: 0;
-}
-
-input,
-textarea {
-  outline: 0;
-}
-
-button,
-input[type="button"],
-input[type="submit"] {
   cursor: pointer;
 }
 
-input:-webkit-autofill,
-textarea:-webkit-autofill {
-  box-shadow: 0 0 0 50px var(--theme) inset;
-}
-
+/* height: auto keeps the aspect ratio when max-width shrinks an image that
+   carries width/height attributes. */
 img {
   display: block;
   max-width: 100%;
+  height: auto;
 }

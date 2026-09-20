@@ -1,0 +1,8 @@
+#!/usr/bin/env bash
+#MISE description="Check the pinned tools are installed (the theme has no other dependencies)"
+#USAGE flag "--frozen" help="Accepted for CI parity; there is no lockfile to freeze"
+set -euo pipefail
+
+hugo version
+dagger version
+go version

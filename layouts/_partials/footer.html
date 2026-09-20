@@ -1,0 +1,6 @@
+{{ partial "functions/get_hook.html" (dict "hook" "footer-start" "context" .) }}
+{{ with site.Params.footerContent }}
+<p>{{ . | markdownify }}</p>
+{{ else }}
+<p>&copy; {{ now.Year }} {{ site.Title }}</p>
+{{ end }}

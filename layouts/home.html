@@ -1,0 +1,46 @@
+{{ define "main" }}
+
+{{ .Content }}
+
+{{ if or site.Params.homeIntroTitle site.Params.homeIntroContent }}
+<div class="intro">
+    {{ with site.Params.homeIntroTitle }}
+    <h2>{{ . }}</h2>
+    {{ end }}
+    {{ with site.Params.homeIntroContent }}
+    <p>{{ . | markdownify }}</p>
+    {{ end }}
+</div>
+{{ end }}
+
+{{ with site.Params.social }}
+<ul class="social-icons">
+    {{- range . }}
+    <li>
+        <a href="{{ partial "functions/site-path.html" .url }}"{{ with .rel }} rel="{{ . }}"{{ end }} aria-label="{{ .title | default (.name | title) }}">
+            {{- partial "icon.html" .name -}}
+        </a>
+    </li>
+    {{- end }}
+</ul>
+{{ end }}
+
+{{ with site.Params.homeCollection }}
+<div class="list-container">
+    {{ with site.Params.homeCollectionTitle }}
+    <h2>{{ . }}</h2>
+    {{ end }}
+
+    {{- /* Page size comes from Hugo's [pagination] pagerSize. */}}
+    {{- /* homeCollection is one section name or a list of them. */}}
+    {{ $sections := . }}
+    {{ if not (reflect.IsSlice $sections) }}{{ $sections = slice $sections }}{{ end }}
+    {{ $paginator := $.Paginate (where site.RegularPages "Section" "in" $sections) }}
+    {{ range $paginator.Pages }}
+    {{ partial "post-entry.html" . }}
+    {{ end }}
+    {{ partial "pagination-controls.html" $paginator }}
+</div>
+{{ end }}
+
+{{ end }}

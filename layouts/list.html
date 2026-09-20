@@ -1,0 +1,30 @@
+{{ define "main" }}
+
+<div class="list-container">
+    {{ partial "breadcrumbs.html" . }}
+
+    {{- /* Tags read as hashtags everywhere: "#lower-case", hyphenated like the
+         URL so a multi-word tag stays one hashtag. Other taxonomies, such as
+         series, are proper names and keep their titles. */}}
+    {{- $isTags := and (in (slice "taxonomy" "term") .Kind) (eq .Data.Plural "tags") }}
+    <h1>{{ if and $isTags (eq .Kind "term") }}#{{ .Title | urlize }}{{ else }}{{ .Title }}{{ end }}</h1>
+    {{ .Content }}
+
+    {{- if eq .Kind "taxonomy" }}
+    {{- /* Terms (tags, series, ...) are short links: list them all, never paginate. */}}
+    <ul class="term-list">
+        {{- range .Pages.ByTitle }}
+        <li><a href="{{ .RelPermalink }}">{{ if $isTags }}#{{ .LinkTitle | urlize }}{{ else }}{{ .LinkTitle }}{{ end }}</a> <span class="term-count">{{ len .Pages }}</span></li>
+        {{- end }}
+    </ul>
+    {{- else }}
+    {{- /* Page size comes from Hugo's [pagination] pagerSize. */}}
+    {{- $paginator := .Paginate .Pages }}
+    {{- range $paginator.Pages }}
+    {{ partial "post-entry.html" . }}
+    {{- end }}
+    {{ partial "pagination-controls.html" $paginator }}
+    {{- end }}
+</div>
+
+{{ end }}

@@ -1,0 +1,75 @@
+name: Bug Report
+description: Report a bug or unexpected behaviour
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting a bug. Please fill in as much detail as possible to help reproduce and fix the issue.
+
+  - type: textarea
+    id: description
+    attributes:
+      label: Description
+      description: A clear and concise description of the bug.
+    validations:
+      required: true
+
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to Reproduce
+      description: How do we reproduce the issue? A minimal page or config that shows it helps most.
+      placeholder: |
+        1. Add `...` to a page's front matter
+        2. Run `hugo server`
+        3. Open `/posts/example/` and observe '...'
+    validations:
+      required: true
+
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected Behaviour
+      description: What did you expect to happen?
+    validations:
+      required: true
+
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual Behaviour
+      description: What actually happened? Screenshots help for visual bugs; say whether it is light or dark mode.
+    validations:
+      required: true
+
+  - type: dropdown
+    id: component
+    attributes:
+      label: Affected Component
+      options:
+        - Templates and hooks (layouts/)
+        - Styles, palettes and syntax highlighting (assets/css/)
+        - Theme button (assets/js/)
+        - Images and the image render hook
+        - Icons and share image (static/)
+        - Example site (exampleSite/)
+        - Tooling (mise tasks, scripts/, Dagger)
+        - CI/CD Pipeline
+        - Unknown
+    validations:
+      required: true
+
+  - type: input
+    id: environment
+    attributes:
+      label: Environment
+      description: Hugo version (`hugo version`), theme version or commit, and browser if it is a rendering bug.
+      placeholder: hugo v0.166.0, emend v1.2.3, Safari 18 on iOS
+
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / Error Output
+      description: Paste the Hugo build output, `mise run ci` output, or browser console messages (CSP violations appear there).
+      render: text

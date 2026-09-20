@@ -1,0 +1,42 @@
+name: CI
+
+# Trunk-based: every pull request and every push to master runs the same
+# `mise run ci` a developer runs locally. mise installs the pinned tools
+# (hugo, dagger, go) from .mise.toml, and Dagger runs the pipeline.
+#
+# Markdown is not in paths-ignore on purpose: the tests check that README.md
+# quotes the current CSP hash.
+on:
+  pull_request:
+    branches:
+      - master
+    types: [opened, reopened, synchronize]
+    paths-ignore:
+      - "docs/**"
+      - ".devcontainer/**"
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - "docs/**"
+      - ".devcontainer/**"
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  ci:
+    name: Test and Package
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+      - name: Check tools
+        run: mise run setup --frozen
+      - name: Run CI checks
+        run: mise run ci

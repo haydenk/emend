@@ -1,0 +1,17 @@
+{{/*
+    Extension points: a site (or another module) customizes the theme by
+    adding layouts/_partials/hooks/<hook>.html instead of overriding a whole
+    template. A hook that does not exist renders nothing. Hugo maps a site's
+    legacy layouts/partials/ directory onto _partials/, so hooks there work too.
+
+    Available hooks: head-start, head-end, single-after-content,
+    footer-start, body-end.
+
+    Parameters:
+    - hook: hook name, without the .html suffix.
+    - context: the page passed to the hook partial.
+*/}}
+{{- $name := printf "hooks/%s.html" .hook -}}
+{{- if templates.Exists (printf "_partials/%s" $name) -}}
+    {{- partial $name .context -}}
+{{- end -}}

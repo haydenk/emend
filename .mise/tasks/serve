@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+#MISE description="Serve exampleSite on http://localhost:1313 with live reload"
+set -euo pipefail
+
+# The theme is the repository root: hand Hugo its parent as the themes directory.
+export HUGO_THEMESDIR="$(dirname "$MISE_PROJECT_ROOT")"
+export HUGO_THEME="$(basename "$MISE_PROJECT_ROOT")"
+
+exec hugo server --source "$MISE_PROJECT_ROOT/exampleSite" \
+  --bind 127.0.0.1 --port 1313 --buildDrafts --disableFastRender --noBuildLock

@@ -1,36 +1,20 @@
-name = 'Typo'
-license = 'MIT'
-licenselink = 'https://github.com/tomfran/typo/blob/main/LICENSE'
-description = 'A simple Hugo theme'
+name = 'Emend'
+license = 'AGPL-3.0-or-later'
+licenselink = 'https://github.com/haydenk/emend/blob/master/LICENSE'
+description = 'A minimal, plain-CSS, CSP-friendly Hugo theme. Hard fork of Typo.'
+homepage = 'https://github.com/haydenk/emend'
+demosite = 'https://haydenk.github.io/emend/'
+min_version = '0.158.0'
 
-homepage = 'https://github.com/tomfran/typo'
-
-demosite = 'https://tomfran.github.io/typo-wiki/'
-
-tags = [
-  "responsive",
-  "simple",
-  "clean",
-  "light",
-  "dark",
-  "blog",
-  "minimal",
-  "personal",
-  "portfolio",
-]
-
-features = [
-  "responsive",
-  "blog",
-  "table-of-contents",
-  "highlight.js",
-  "favicon",
-  "social-icons",
-  "minified-assets",
-  "dark-light-images",
-  "color-palettes",
-]
+tags = ["blog", "minimal", "light", "dark", "responsive", "personal"]
+features = ["table-of-contents", "taxonomies", "archive", "dark-mode", "no-third-party-requests"]
 
 [author]
-name = 'Francesco Tomaselli'
-homepage = 'https://tomfran.github.io/typo-wiki/'
+name = 'Hayden King'
+homepage = 'https://www.haydenk.com/'
+
+[original]
+name = 'Typo'
+author = 'Francesco Tomaselli'
+homepage = 'https://github.com/tomfran/typo'
+repo = 'https://github.com/tomfran/typo'

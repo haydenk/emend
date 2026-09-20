@@ -1,0 +1,39 @@
+#!/usr/bin/env bash
+#MISE description="Render the demo site's share card (exampleSite/static/og-image.png) with headless Chrome"
+set -euo pipefail
+
+root="$MISE_PROJECT_ROOT"
+out="$root/exampleSite/static/og-image.png"
+
+# Text needs real fonts, so this one asset is rendered by a browser. Set CHROME
+# to use a different Chromium-based browser.
+chrome="${CHROME:-}"
+if [ -z "$chrome" ]; then
+  for candidate in \
+    "/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" \
+    "/Applications/Chromium.app/Contents/MacOS/Chromium" \
+    "$(command -v google-chrome || true)" \
+    "$(command -v chromium || true)" \
+    "$(command -v chromium-browser || true)"; do
+    if [ -n "$candidate" ] && [ -x "$candidate" ]; then
+      chrome="$candidate"
+      break
+    fi
+  done
+fi
+if [ -z "$chrome" ]; then
+  echo "No Chrome or Chromium found: set CHROME=/path/to/browser" >&2
+  exit 1
+fi
+
+"$chrome" --headless=new --disable-gpu --hide-scrollbars \
+  --force-device-scale-factor=1 --window-size=1200,630 \
+  --screenshot="$out" "file://$root/scripts/og-image.html" >/dev/null 2>&1
+
+# The card is only useful at the exact OpenGraph size.
+size="$(python3 -c 'import struct,sys; d=open(sys.argv[1],"rb").read(24); print("%dx%d" % struct.unpack(">II", d[16:24]))' "$out")"
+if [ "$size" != "1200x630" ]; then
+  echo "rendered $size, expected 1200x630" >&2
+  exit 1
+fi
+echo "Wrote ${out#"$root"/} ($size, $(wc -c < "$out" | tr -d ' ') bytes)"

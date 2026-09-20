@@ -1,0 +1,6 @@
+#!/usr/bin/env bash
+#MISE description="Print the CSP source for the theme's inline script; fails if it differs from the recorded hash"
+set -euo pipefail
+
+cd "$MISE_PROJECT_ROOT"
+exec dagger call csp-hash

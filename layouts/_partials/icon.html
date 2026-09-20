@@ -1,0 +1,8 @@
+{{- /* Inline SVG icon by name (layouts/_partials/icons/<name>.html); falls back to the name as text. */ -}}
+{{- $name := . | lower | strings.TrimSpace -}}
+{{- $icon := printf "icons/%s.html" $name -}}
+{{- if templates.Exists (printf "_partials/%s" $icon) -}}
+    {{- partial $icon . -}}
+{{- else -}}
+    {{- $name -}}
+{{- end -}}

@@ -1,0 +1,78 @@
+{{- /*
+  Markdown images. A destination that resolves to a page or global resource
+  gets width/height (no layout shift) and is served as WebP; when wider than
+  the content column it also gets a resized srcset, so multi-MB sources never
+  ship at full size. Unresolvable destinations (external or /static URLs)
+  pass through untouched.
+
+  650 is the content column in px (--main-width minus body padding);
+  1300 is its 2x candidate.
+*/ -}}
+{{- $u := urls.Parse .Destination -}}
+{{- $src := $u.String -}}
+{{- $res := "" -}}
+{{- if not $u.IsAbs -}}
+  {{- $path := strings.TrimPrefix "./" $u.Path -}}
+  {{- with or (.PageInner.Resources.Get $path) (resources.Get $path) -}}
+    {{- $res = . -}}
+    {{- $src = .RelPermalink -}}
+  {{- end -}}
+{{- end -}}
+{{- /* Not a Hugo resource (a /static file or an external URL): keep a
+     root-relative path working when the site is served from a subpath. */ -}}
+{{- if not $res }}{{ $src = partial "functions/site-path.html" $src }}{{ end -}}
+{{- $attributes := merge .Attributes (dict "alt" .PlainText "src" $src) -}}
+{{- /* The first image of a page is a likely Largest Contentful Paint element, so
+     it loads eagerly and first; the rest load lazily. */ -}}
+{{- $priority := cond (eq .Ordinal 0) (dict "fetchpriority" "high") (dict "loading" "lazy") -}}
+{{- $subtype := "" -}}
+{{- with $res }}{{ $subtype = .MediaType.SubType }}{{ end -}}
+{{- if in (slice "png" "jpeg" "webp" "tiff" "bmp" "gif") $subtype -}}
+  {{- $attributes = merge $attributes $priority (dict "decoding" "async") -}}
+  {{- if eq $subtype "gif" -}}
+    {{- /* Possibly animated: never re-encoded. */ -}}
+    {{- $attributes = merge $attributes (dict "width" (string $res.Width) "height" (string $res.Height)) -}}
+  {{- else if gt $res.Width 650 -}}
+    {{- $small := $res.Process "resize 650x webp q80" -}}
+    {{- $large := $res.Process (printf "resize %dx webp q80" (int (math.Min 1300 $res.Width))) -}}
+    {{- $attributes = merge $attributes (dict
+          "src" $small.RelPermalink
+          "srcset" (printf "%s %dw, %s %dw" $small.RelPermalink $small.Width $large.RelPermalink $large.Width)
+          "sizes" "(min-width: 700px) 650px, calc(100vw - 3rem)"
+          "width" (string $small.Width) "height" (string $small.Height)) -}}
+  {{- else -}}
+    {{- /* Small enough to keep its size, but still served as WebP. */ -}}
+    {{- $image := $res -}}
+    {{- if ne $subtype "webp" }}{{ $image = $res.Process "webp q80" }}{{ end -}}
+    {{- $attributes = merge $attributes (dict "src" $image.RelPermalink "width" (string $image.Width) "height" (string $image.Height)) -}}
+  {{- end -}}
+{{- else if eq $subtype "svg" -}}
+  {{- /* Hugo cannot measure an SVG, so its viewBox supplies the width and height
+       attributes. They give the browser the aspect ratio before the file
+       loads (no layout shift); the .img-vector class keeps it column-wide. */ -}}
+  {{- $attributes = merge $attributes $priority (dict "decoding" "async" "class" (printf "%s img-vector" (.Attributes.class | default "") | strings.TrimSpace)) -}}
+  {{- with findRESubmatch `viewBox=["']\s*[-\d.]+[\s,]+[-\d.]+[\s,]+([\d.]+)[\s,]+([\d.]+)` $res.Content 1 -}}
+    {{- $box := index . 0 -}}
+    {{- $attributes = merge $attributes (dict "width" (index $box 1 | float | math.Round | int | string) "height" (index $box 2 | float | math.Round | int | string)) -}}
+  {{- end -}}
+{{- end -}}
+{{- /* No wrapping link and no <figure> without a caption: Markdown can put an
+     image inside a link ([![alt](img)](url)), where a second <a> or a block
+     element would be invalid HTML. A captioned, standalone image is the one
+     case that gets a <figure> (IsBlock needs the site to set
+     markup.goldmark.parser.wrapStandAloneImageWithinParagraph = false);
+     elsewhere the title stays a tooltip. Known limit: Hugo also reports
+     IsBlock for a linked image, so do not give a linked image a title. */ -}}
+{{- $figure := and .IsBlock .Title -}}
+{{- if and .Title (not $figure) }}{{ $attributes = merge $attributes (dict "title" .Title) }}{{ end -}}
+{{- if $figure }}<figure>{{ end -}}
+<img
+{{- range $k, $v := $attributes -}}
+  {{- if or $v (eq $k "alt") -}}
+    {{- printf " %s=%q" $k ($v | transform.HTMLEscape) | safeHTMLAttr -}}
+  {{- end -}}
+{{- end -}}>
+{{- if $figure }}
+<figcaption>{{ .Title | markdownify }}</figcaption>
+</figure>
+{{- end -}}

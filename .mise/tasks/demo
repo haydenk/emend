@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+#MISE description="Build the demo site for a public URL in the Dagger pipeline, into dist/demo (what the Demo workflow deploys)"
+#USAGE arg "<base_url>" help="Where the demo will be served, for example https://haydenk.github.io/emend/"
+set -euo pipefail
+
+cd "$MISE_PROJECT_ROOT"
+exec dagger call demo --base-url "$usage_base_url" export --path dist/demo

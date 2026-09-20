@@ -1,0 +1,5 @@
+#!/usr/bin/env bash
+#MISE description="Regenerate the default favicon set and OpenGraph image in static/"
+set -euo pipefail
+
+exec python3 "$MISE_PROJECT_ROOT/scripts/gen-icons.py"

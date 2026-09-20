@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+#MISE description="Create or update the repository's labels from .github/labels.json (needs gh, authenticated)"
+set -euo pipefail
+
+# --force updates a label that already exists. Labels not listed are left alone.
+jq -r '.[] | [.name, .color, .description] | @tsv' "$MISE_PROJECT_ROOT/.github/labels.json" |
+  while IFS=$'\t' read -r name color description; do
+    gh label create "$name" --color "$color" --description "$description" --force
+  done

@@ -1,12 +1,14 @@
+/* Every text pair below meets WCAG AA (4.5:1), including secondary text on
+   the code background. Re-check both modes before changing a value. */
 :root {
   --content-primary-light: rgb(36, 36, 36);
-  --content-secondary-light: rgb(117, 117, 117);
+  --content-secondary-light: rgb(105, 105, 105);
   --background-light: rgb(255, 255, 255);
   --code-background-light: rgb(249, 249, 249);
   --code-border-light: rgb(229, 229, 229);
 
   --content-primary-dark: rgb(218, 218, 218);
-  --content-secondary-dark: rgb(140, 140, 140);
+  --content-secondary-dark: rgb(150, 150, 150);
   --background-dark: rgb(20, 20, 20);
   --code-background-dark: rgb(30, 30, 30);
   --code-border-dark: rgb(50, 50, 50);

@@ -1,0 +1,38 @@
+name: Release
+
+# Cut a release from trunk by pushing a semver tag:
+#   git tag v1.2.3 && git push origin v1.2.3
+# Hugo Modules resolve the same tags, so module users and tarball users get
+# identical versions. Dagger tests, packages and publishes the tarball.
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: Publish Release
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          # Full history, to check the tag against master below.
+          fetch-depth: 0
+      - name: Require the tag to be on master
+        run: git merge-base --is-ancestor "$GITHUB_SHA" origin/master
+      - uses: jdx/mise-action@c2a87611a18de5b3828c5652fe268e992400cb5c # v4.3.0
+      - name: Check tools
+        run: mise run setup --frozen
+      - name: Test, package and publish
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          # The task asks for confirmation when run by hand.
+          MISE_YES: "1"
+        run: mise run release "$GITHUB_REF_NAME"

@@ -1,0 +1,18 @@
+{{- /* Fixture copy of a site shortcode: proves pure-CSS flip cards work with the theme. */ -}}
+{{- $q := .Get "q" -}}
+{{- $a := .Get "a" -}}
+<label class="flashcard">
+  <input type="checkbox" aria-label="Flip card: {{ $q }}">
+  <span class="flashcard-inner">
+    <span class="flashcard-face flashcard-front">
+      <span class="flashcard-label">Question</span>
+      <span class="flashcard-text">{{ $q | markdownify }}</span>
+      <span class="flashcard-hint">Tap to reveal</span>
+    </span>
+    <span class="flashcard-face flashcard-back">
+      <span class="flashcard-label">Answer</span>
+      <span class="flashcard-text">{{ $a | markdownify }}</span>
+      <span class="flashcard-hint">Tap to flip back</span>
+    </span>
+  </span>
+</label>

@@ -1,0 +1,43 @@
+{{- /* Trimmed from Hugo's embedded opengraph.html. Expects (dict "page" "description"). */ -}}
+{{- $page := .page }}
+<meta property="og:url" content="{{ $page.Permalink }}">
+<meta property="og:site_name" content="{{ site.Title }}">
+<meta property="og:title" content="{{ if $page.IsHome }}{{ site.Title }}{{ else }}{{ $page.Title }}{{ end }}">
+{{- with .description }}
+<meta property="og:description" content="{{ . }}">
+{{- end }}
+{{- if $page.IsPage }}
+<meta property="og:type" content="article">
+{{- $ISO8601 := "2006-01-02T15:04:05-07:00" }}
+{{- with $page.PublishDate }}
+<meta property="article:published_time" {{ .Format $ISO8601 | printf "content=%q" | safeHTMLAttr }}>
+{{- end }}
+{{- with $page.Lastmod }}
+<meta property="article:modified_time" {{ .Format $ISO8601 | printf "content=%q" | safeHTMLAttr }}>
+{{- end }}
+{{- range $page.GetTerms "tags" | first 6 }}
+<meta property="article:tag" content="{{ .Page.Title | plainify }}">
+{{- end }}
+{{- else }}
+<meta property="og:type" content="website">
+{{- end }}
+{{- /* Share image: the page's `images` front matter, else a bundle image named
+     *feature*, *cover* or *thumbnail*, else site.Params.images, else the generic
+     static/og-image.png the theme ships (a site can replace that file). */ -}}
+{{- $image := "" }}
+{{- with $page.Params.images }}
+  {{- /* `images` may be a list or a single string; a bundle-relative name
+       resolves to the page resource, anything else is treated as a URL. */}}
+  {{- $first := index (slice | append .) 0 }}
+  {{- with or ($page.Resources.Get $first) (resources.Get $first) }}{{ $image = .Permalink }}{{ else }}{{ $image = $first | absURL }}{{ end }}
+{{- else with $page.Resources.ByType "image" }}
+  {{- with .GetMatch "*{feature,cover,thumbnail}*" }}{{ $image = .Permalink }}{{ end }}
+{{- end }}
+{{- if not $image }}{{ with site.Params.images }}{{ $image = index (slice | append .) 0 | absURL }}{{ end }}{{ end }}
+{{- if not $image }}{{ $image = "og-image.png" | absURL }}{{ end }}
+{{- with $image }}
+<meta property="og:image" content="{{ . }}">
+<meta name="twitter:card" content="summary_large_image">
+{{- else }}
+<meta name="twitter:card" content="summary">
+{{- end }}

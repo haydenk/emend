@@ -1,0 +1,164 @@
+/* Fixture copy of a site stylesheet: pure-CSS flip cards (checkbox hack, no
+   JavaScript). It shows how a site stylesheet follows the theme's light/dark
+   mode: every colour is a light-dark() pair, so the OS preference and the
+   manual toggle both apply. */
+
+.flashcards-toggle {
+  margin: 1rem 0;
+}
+
+.flashcards-toggle > summary {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 44px;
+  padding: 0.5rem 1rem;
+  border: 1px solid light-dark(#cfdccd, #4a5f4d);
+  border-radius: 8px;
+  background: light-dark(#f4f8f4, #26302a);
+  color: light-dark(#3f6b3c, #7db479);
+  font-weight: 600;
+  cursor: pointer;
+  list-style: none;
+}
+
+.flashcards-toggle > summary::-webkit-details-marker {
+  display: none;
+}
+
+.flashcards-toggle > summary::before {
+  content: "";
+  flex-shrink: 0;
+  width: 0.5em;
+  height: 0.5em;
+  border-right: 2px solid currentColor;
+  border-bottom: 2px solid currentColor;
+  transform: rotate(-45deg);
+  transition: transform 0.2s ease;
+}
+
+.flashcards-toggle[open] > summary::before {
+  transform: rotate(45deg);
+}
+
+.flashcards-toggle > summary:hover {
+  border-color: light-dark(#5c8b59, #7db479);
+}
+
+.flashcards-toggle-hide,
+.flashcards-toggle[open] .flashcards-toggle-show {
+  display: none;
+}
+
+.flashcards-toggle[open] .flashcards-toggle-hide {
+  display: inline;
+}
+
+.flashcards-toggle-count {
+  margin-left: auto;
+  font-size: 0.8em;
+  font-weight: normal;
+  color: var(--content-secondary);
+}
+
+.flashcards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+  gap: 1rem;
+  margin: 1.5rem 0;
+  counter-reset: flashcard;
+}
+
+.flashcard {
+  position: relative;
+  display: block;
+  height: 240px;
+  perspective: 1000px;
+  cursor: pointer;
+  counter-increment: flashcard;
+}
+
+.flashcard > input {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.flashcard-inner {
+  position: relative;
+  display: block;
+  width: 100%;
+  height: 100%;
+  transform-style: preserve-3d;
+  transition: transform 0.5s ease;
+}
+
+.flashcard > input:checked ~ .flashcard-inner {
+  transform: rotateY(180deg);
+}
+
+.flashcard:has(> input:focus-visible) {
+  outline: 2px solid currentColor;
+  outline-offset: 3px;
+  border-radius: 8px;
+}
+
+.flashcard-face {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  padding: 0.9rem 1rem;
+  border: 1px solid light-dark(#e4e4e4, #545454);
+  border-radius: 8px;
+  background: light-dark(#fff, #222);
+  backface-visibility: hidden;
+  -webkit-backface-visibility: hidden;
+  overflow-y: auto;
+}
+
+.flashcard-back {
+  transform: rotateY(180deg);
+  background: light-dark(#f4f8f4, #26302a);
+  border-color: light-dark(#cfdccd, #4a5f4d);
+}
+
+.flashcard-label {
+  flex-shrink: 0;
+  font-size: 0.7em;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--content-secondary);
+}
+
+.flashcard-front .flashcard-label::after {
+  content: " " counter(flashcard);
+}
+
+.flashcard-text {
+  margin: auto 0;
+  padding: 0.5rem 0;
+  font-size: 0.9em;
+  line-height: 1.5;
+}
+
+.flashcard-text p {
+  margin: 0;
+}
+
+.flashcard-hint {
+  flex-shrink: 0;
+  font-size: 0.7em;
+  text-align: right;
+  color: var(--content-secondary);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .flashcard-inner,
+  .flashcards-toggle > summary::before {
+    transition: none;
+  }
+}

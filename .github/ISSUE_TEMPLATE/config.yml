@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Question or Discussion
+    url: https://github.com/haydenk/emend/discussions
+    about: Ask questions and discuss the theme in GitHub Discussions.
+  - name: Security Problem
+    url: https://github.com/haydenk/emend/security/advisories/new
+    about: Report a vulnerability privately, not in a public issue.

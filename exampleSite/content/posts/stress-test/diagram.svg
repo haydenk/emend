@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 200" role="img" aria-label="Two boxes joined by an arrow">
+  <!-- Own background and colours: an SVG loaded through <img> cannot inherit the page's text colour. -->
+  <rect width="400" height="200" fill="#ffffff"/>
+  <rect x="20" y="60" width="140" height="80" fill="none" stroke="#242424" stroke-width="3"/>
+  <rect x="240" y="60" width="140" height="80" fill="none" stroke="#242424" stroke-width="3"/>
+  <path d="M160 100h70m-12-10 12 10-12 10" fill="none" stroke="#242424" stroke-width="3"/>
+</svg>
