@@ -51,6 +51,18 @@ go mod tidy
 cd .. && mise run ci      # Dagger regenerates its code and must still pass
 ```
 
+Check a version before pinning it, because the newest release can carry its
+own advisory:
+
+```sh
+gh api -X GET advisories -f ecosystem=go -f "affects=<module>@<version>" --jq 'length'   # 0 = clean
+```
+
+The `replace` lines at the bottom of `.dagger/go.mod` (the OpenTelemetry log
+packages) belong to Dagger: `dagger develop` rewrites them on every run, so an
+advisory against those versions can only be fixed by a Dagger release that
+raises its pin.
+
 To move to a new Dagger release, change the version in `.mise.toml` and
 `dagger.json`, then run `dagger develop`.
 
