@@ -35,6 +35,8 @@ entry describes what changed from it.
 - Support for sites served from a subpath.
 - `scripts/check-constraints.py`, a Content Security Policy checker a site can run on its own build.
 - Documentation in `docs/`, a demo site on GitHub Pages, and release tarballs for manual install.
+- A contributing guide, code of conduct, security policy, and issue and pull request templates.
+- Automated releases: merging a `release/<version>` pull request tags the commit, publishes the tarball with that version's changelog section as the notes, and deploys the demo site.
 
 ### Changed
 
