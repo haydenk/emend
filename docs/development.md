@@ -109,7 +109,10 @@ switched off.
 Development is trunk-based on `master`. GitHub Actions only triggers things:
 each workflow installs the pinned tools with `jdx/mise-action` and calls one
 mise task, and Dagger does the work. Actions are pinned by commit SHA, and
-runners to `ubuntu-24.04` rather than the floating `ubuntu-latest`.
+runners to `ubuntu-24.04-arm` rather than the floating `ubuntu-latest`.
+GitHub-hosted arm64 runners are free for public repositories only. The pipeline
+itself is architecture-neutral: it picks Hugo's arm64 or amd64 build to match
+the machine it runs on.
 
 | Workflow | Runs on | Does |
 | --- | --- | --- |
