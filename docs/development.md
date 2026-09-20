@@ -108,13 +108,15 @@ switched off.
 
 Development is trunk-based on `master`. GitHub Actions only triggers things:
 each workflow installs the pinned tools with `jdx/mise-action` and calls one
-mise task, and Dagger does the work. Actions are pinned by commit SHA.
+mise task, and Dagger does the work. Actions are pinned by commit SHA, and
+runners to `ubuntu-24.04` rather than the floating `ubuntu-latest`.
 
 | Workflow | Runs on | Does |
 | --- | --- | --- |
 | `ci.yml` | pull requests, pushes to `master` | `mise run ci` |
 | `release.yml` | a `v*.*.*` tag | checks the tag is on `master`, then `mise run release` |
 | `demo.yml` | after a successful release, or by hand | builds the latest release's demo and deploys it to GitHub Pages |
+| `codeql.yml` | pull requests, pushes to `master`, weekly | CodeQL analysis of the workflows, JavaScript, Python and Go (after `dagger develop`, so the pipeline's Go type-checks) |
 | `labeler.yml` | pull requests | labels by the paths touched |
 | `labels.yml` | a change to `.github/labels.json` | syncs the repository's labels |
 
