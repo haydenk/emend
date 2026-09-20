@@ -131,7 +131,7 @@ the machine it runs on.
 | --- | --- | --- |
 | `ci.yml` | pull requests, pushes to `master` | `mise run ci` |
 | `tag.yml` | a merged `release/*` or `hotfix/*` pull request | tags the merge commit `v<version>`, then calls `release.yml` |
-| `release.yml` | called by `tag.yml`, or a `v*.*.*` tag pushed by hand | checks the tag is on `master`, then `mise run release` |
+| `release.yml` | called by `tag.yml` (or by hand, to retry an existing tag) | checks the tag is on `master`, then `mise run release` |
 | `demo.yml` | after a successful release, or by hand | builds the latest release's demo and deploys it to GitHub Pages |
 | `codeql.yml` | pull requests, pushes to `master`, weekly | CodeQL analysis of the workflows, JavaScript, Python and Go (after `dagger develop`, so the pipeline's Go type-checks) |
 | `labeler.yml` | pull requests | labels by the paths touched |
@@ -151,10 +151,12 @@ It then calls `release.yml`, which tests, packages and publishes
 `demo.yml` follows with the GitHub Pages deploy. Hugo Modules resolve the same
 tags, so module users and tarball users get identical versions.
 
-`tag.yml` calls `release.yml` directly because a tag created by a workflow's
-`GITHUB_TOKEN` does not trigger other workflows. A tag pushed by hand does, so
-`git tag -a v1.2.3 -m v1.2.3 && git push origin v1.2.3` from `master` still
-releases, without the pull request.
+Releases only start this way. `tag.yml` calls `release.yml` directly, because
+a tag created by a workflow's `GITHUB_TOKEN` does not trigger other workflows,
+and `release.yml` has no tag trigger of its own: a tag pushed by hand releases
+nothing. If the release step fails after the tag exists, fix the pipeline on
+`master` and run the Release workflow by hand for that tag (Actions > Release >
+Run workflow). That can only republish an existing tag, never create one.
 
 `master` accepts only signed commits, and cannot be force-pushed or deleted;
 `v*` tags cannot be moved or deleted.

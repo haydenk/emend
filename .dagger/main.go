@@ -311,12 +311,17 @@ func (m *Emend) Tag(
 		// Creating a ref is a side effect: never let Dagger serve it from cache.
 		WithEnvVariable("RUN_AT", time.Now().UTC().Format(time.RFC3339Nano)).
 		WithExec([]string{"sh", "-euc", `
-existing="$(gh api "repos/$GH_REPO/git/ref/tags/$TAG" --jq .object.sha 2>/dev/null || true)"
-if [ -n "$existing" ] && [ "$existing" != "$SHA" ]; then
-  echo "$TAG already exists at $existing, not $SHA" >&2
-  exit 1
+# Branch on gh's exit status, never on its output: for a missing tag it exits
+# non-zero and prints the 404 body on stdout. commits/tags/<tag> resolves an
+# annotated tag to its commit, where git/ref would return the tag object.
+if existing="$(gh api "repos/$GH_REPO/commits/tags/$TAG" --jq .sha 2>/dev/null)"; then
+  if [ "$existing" != "$SHA" ]; then
+    echo "$TAG already exists at $existing, not $SHA" >&2
+    exit 1
+  fi
+else
+  gh api -X POST "repos/$GH_REPO/git/refs" -f ref="refs/tags/$TAG" -f sha="$SHA" >/dev/null
 fi
-[ -n "$existing" ] || gh api -X POST "repos/$GH_REPO/git/refs" -f ref="refs/tags/$TAG" -f sha="$SHA" >/dev/null
 printf '%s' "$TAG"`}).
 		Stdout(ctx)
 }

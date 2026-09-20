@@ -1,21 +1,26 @@
 name: Release
 
-# Publishes a release for a semver tag: Dagger tests, packages and attaches
-# emend-<tag>.tar.gz, with the tag's CHANGELOG.md section as the notes. Hugo
-# Modules resolve the same tags, so module users and tarball users get
-# identical versions.
+# Publishes the release for an existing semver tag: Dagger tests, packages and
+# attaches emend-<tag>.tar.gz, with the tag's CHANGELOG.md section as the
+# notes. Hugo Modules resolve the same tags, so module users and tarball users
+# get identical versions.
 #
-# Two ways in:
-#   - the Tag Release workflow calls it after a release/* pull request merges
-#   - a tag pushed by hand: git tag -a v1.2.3 -m v1.2.3 && git push origin v1.2.3
+# Releases always start from a release branch: the Tag Release workflow creates
+# the tag when a release/* pull request merges, then calls this workflow.
+# There is deliberately no `on: push: tags` trigger, so pushing a tag by hand
+# releases nothing. workflow_dispatch exists only to retry the release of a tag
+# that already exists (it runs this file from master, so a pipeline fix applies).
 on:
-  push:
-    tags:
-      - "v*.*.*"
   workflow_call:
     inputs:
       tag:
         description: The tag to release, for example v1.2.3. It must already exist.
+        required: true
+        type: string
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: An existing tag whose release should be (re)published, for example v1.2.3.
         required: true
         type: string
 
@@ -23,7 +28,7 @@ permissions:
   contents: write
 
 concurrency:
-  group: release-${{ inputs.tag || github.ref_name }}
+  group: release-${{ inputs.tag }}
   cancel-in-progress: false
 
 jobs:
@@ -33,7 +38,7 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
-          ref: refs/tags/${{ inputs.tag || github.ref_name }}
+          ref: refs/tags/${{ inputs.tag }}
           # Full history, to check the tag against master below.
           fetch-depth: 0
       - name: Require the tag to be on master
@@ -46,5 +51,5 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           # The task asks for confirmation when run by hand.
           MISE_YES: "1"
-          TAG: ${{ inputs.tag || github.ref_name }}
+          TAG: ${{ inputs.tag }}
         run: mise run release "$TAG"

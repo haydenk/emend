@@ -3,9 +3,9 @@ name: Tag Release
 # Merging a release/<version> or hotfix/<version> pull request into master tags
 # the merge commit v<version>, then runs the Release workflow for that tag.
 #
-# Release is called directly rather than left to its own tag trigger: a tag
-# created with GITHUB_TOKEN does not start other workflows. A tag pushed by
-# hand still does (release.yml keeps `on: push: tags`).
+# This is the only way a release starts. Release is called directly: a tag
+# created with GITHUB_TOKEN would not start another workflow, and release.yml
+# has no tag trigger of its own, so a tag pushed by hand releases nothing.
 on:
   pull_request:
     types: [closed]
